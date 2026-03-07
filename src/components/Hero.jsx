@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 
 const terminalLines = [
   { type: "comment", text: "# Agent requests premium data" },
@@ -56,13 +56,112 @@ function Terminal() {
   )
 }
 
+function NetworkCanvas() {
+  const canvasRef = useRef(null)
+  const nodesRef = useRef([])
+  const animRef = useRef(null)
+
+  const initNodes = useCallback((w, h) => {
+    const count = Math.floor((w * h) / 25000)
+    return Array.from({ length: Math.max(count, 12) }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      r: Math.random() * 2 + 1.5,
+    }))
+  }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext("2d")
+    let w, h
+
+    const resize = () => {
+      const rect = canvas.parentElement.getBoundingClientRect()
+      w = rect.width
+      h = rect.height
+      canvas.width = w * devicePixelRatio
+      canvas.height = h * devicePixelRatio
+      ctx.scale(devicePixelRatio, devicePixelRatio)
+      canvas.style.width = w + "px"
+      canvas.style.height = h + "px"
+      nodesRef.current = initNodes(w, h)
+    }
+
+    resize()
+    window.addEventListener("resize", resize)
+
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h)
+      const nodes = nodesRef.current
+      const connectionDist = 150
+
+      // Update positions
+      for (const n of nodes) {
+        n.x += n.vx
+        n.y += n.vy
+        if (n.x < 0 || n.x > w) n.vx *= -1
+        if (n.y < 0 || n.y > h) n.vy *= -1
+      }
+
+      // Draw connections
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x
+          const dy = nodes[i].y - nodes[j].y
+          const dist = Math.sqrt(dx * dx + dy * dy)
+          if (dist < connectionDist) {
+            const alpha = (1 - dist / connectionDist) * 0.12
+            ctx.beginPath()
+            ctx.moveTo(nodes[i].x, nodes[i].y)
+            ctx.lineTo(nodes[j].x, nodes[j].y)
+            ctx.strokeStyle = `rgba(124, 154, 216, ${alpha})`
+            ctx.lineWidth = 1
+            ctx.stroke()
+          }
+        }
+      }
+
+      // Draw nodes
+      for (const n of nodes) {
+        ctx.beginPath()
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
+        ctx.fillStyle = "rgba(124, 154, 216, 0.2)"
+        ctx.fill()
+      }
+
+      animRef.current = requestAnimationFrame(draw)
+    }
+
+    draw()
+
+    return () => {
+      window.removeEventListener("resize", resize)
+      if (animRef.current) cancelAnimationFrame(animRef.current)
+    }
+  }, [initNodes])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 pointer-events-none"
+      style={{ zIndex: 1 }}
+    />
+  )
+}
+
 export default function Hero() {
   return (
     <section className="relative px-6 pt-32 pb-32 md:pb-24 min-h-[85vh] flex flex-col justify-end bg-fg text-inverse border-b-2 border-fg overflow-x-clip noise">
+      {/* Animated network background */}
+      <NetworkCanvas />
+
       {/* Geometric accent */}
-      <div className="absolute top-12 right-12 w-32 h-32 border-2 border-accent/20 rotate-12 hidden lg:block" />
-      <div className="absolute top-20 right-20 w-32 h-32 border-2 border-accent/10 rotate-45 hidden lg:block" />
-      <div className="absolute bottom-40 left-8 w-16 h-16 bg-accent/10 hidden lg:block" />
+      <div className="absolute top-12 right-12 w-32 h-32 border-2 border-accent/20 rotate-12 hidden lg:block" style={{ zIndex: 2 }} />
+      <div className="absolute top-20 right-20 w-32 h-32 border-2 border-accent/10 rotate-45 hidden lg:block" style={{ zIndex: 2 }} />
+      <div className="absolute bottom-40 left-8 w-16 h-16 bg-accent/10 hidden lg:block" style={{ zIndex: 2 }} />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto">
         <div className="relative">

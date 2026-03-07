@@ -1,26 +1,17 @@
-import Navbar from "./components/Navbar"
-import Hero from "./components/Hero"
-import Features from "./components/Features"
-import HowItWorks from "./components/HowItWorks"
-import Comparison from "./components/Comparison"
-import Quote from "./components/Quote"
-import Products from "./components/Products"
-import CTA from "./components/CTA"
-import Footer from "./components/Footer"
+import { BrowserRouter, Routes, Route } from "react-router"
+import Landing from "./pages/Landing"
+import Marketplace from "./pages/Marketplace"
 
 function App() {
   return (
-    <div className="min-h-screen font-mono bg-bg text-fg">
-      <Navbar />
-      <Hero />
-      <Features />
-      <HowItWorks />
-      <Comparison />
-      <Quote />
-      <Products />
-      <CTA />
-      <Footer />
-    </div>
+    <BrowserRouter>
+      <div className="min-h-screen font-mono bg-bg text-fg">
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 

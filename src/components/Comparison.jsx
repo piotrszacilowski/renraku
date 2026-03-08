@@ -31,7 +31,7 @@ export default function Comparison() {
                   <div className="text-3xl font-black text-fg-muted">vs</div>
                   <div className="text-right">
                     <div className="text-xs text-accent uppercase tracking-wider">Renraku</div>
-                    <div className="text-2xl font-black text-accent">$0<span className="text-sm">.10</span></div>
+                    <div className="text-2xl font-black text-accent">$1<span className="text-sm">.00</span></div>
                     <div className="text-xs text-fg-muted">gas fees</div>
                   </div>
                 </div>
@@ -102,11 +102,11 @@ export default function Comparison() {
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-accent-light font-black text-xl">✓</span>
-                    Built for AI agents
+                    Non-custodial — buyer → seller
                   </li>
                   <li className="flex items-start gap-3">
                     <span className="text-accent-light font-black text-xl">✓</span>
-                    Fully open source
+                    Built for AI agents
                   </li>
                 </ul>
                 <div className="mt-12 pt-6 border-t border-[#333] relative z-10">

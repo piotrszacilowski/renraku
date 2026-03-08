@@ -9,7 +9,7 @@ const terminalLines = [
   { type: "header", text: "X-Price: 0.001 USDC" },
   { type: "header", text: "X-Network: ink" },
   { type: "blank", text: "" },
-  { type: "comment", text: "# Facilitator handles payment..." },
+  { type: "comment", text: "# Facilitator settles on-chain..." },
   { type: "success", text: "✓ Payment verified. Access granted." },
 ]
 
@@ -59,16 +59,20 @@ function Terminal() {
 function NetworkCanvas() {
   const canvasRef = useRef(null)
   const nodesRef = useRef([])
+  const pulsesRef = useRef([])
   const animRef = useRef(null)
+  const timeRef = useRef(0)
 
   const initNodes = useCallback((w, h) => {
-    const count = Math.floor((w * h) / 25000)
-    return Array.from({ length: Math.max(count, 12) }, () => ({
+    const count = Math.floor((w * h) / 12000)
+    return Array.from({ length: Math.max(count, 30) }, () => ({
       x: Math.random() * w,
       y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3,
-      r: Math.random() * 2 + 1.5,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      r: Math.random() * 2.5 + 1.5,
+      hub: Math.random() > 0.8,
+      phase: Math.random() * Math.PI * 2,
     }))
   }, [])
 
@@ -88,15 +92,19 @@ function NetworkCanvas() {
       canvas.style.width = w + "px"
       canvas.style.height = h + "px"
       nodesRef.current = initNodes(w, h)
+      pulsesRef.current = []
     }
 
     resize()
     window.addEventListener("resize", resize)
 
     const draw = () => {
+      timeRef.current += 0.016
+      const t = timeRef.current
       ctx.clearRect(0, 0, w, h)
       const nodes = nodesRef.current
-      const connectionDist = 150
+      const pulses = pulsesRef.current
+      const connectionDist = 180
 
       // Update positions
       for (const n of nodes) {
@@ -106,14 +114,16 @@ function NetworkCanvas() {
         if (n.y < 0 || n.y > h) n.vy *= -1
       }
 
-      // Draw connections
+      // Find connections and draw them
+      const connections = []
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const dx = nodes[i].x - nodes[j].x
           const dy = nodes[i].y - nodes[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < connectionDist) {
-            const alpha = (1 - dist / connectionDist) * 0.12
+            connections.push([i, j, dist])
+            const alpha = (1 - dist / connectionDist) * 0.3
             ctx.beginPath()
             ctx.moveTo(nodes[i].x, nodes[i].y)
             ctx.lineTo(nodes[j].x, nodes[j].y)
@@ -124,11 +134,71 @@ function NetworkCanvas() {
         }
       }
 
+      // Spawn traveling pulses along connections
+      if (connections.length > 0 && Math.random() < 0.06) {
+        const [i, j] = connections[Math.floor(Math.random() * connections.length)]
+        pulses.push({
+          fromX: nodes[i].x, fromY: nodes[i].y,
+          toX: nodes[j].x, toY: nodes[j].y,
+          progress: 0,
+          speed: 0.008 + Math.random() * 0.012,
+        })
+      }
+
+      // Draw and update pulses
+      for (let p = pulses.length - 1; p >= 0; p--) {
+        const pulse = pulses[p]
+        pulse.progress += pulse.speed
+        if (pulse.progress > 1) {
+          pulses.splice(p, 1)
+          continue
+        }
+        const px = pulse.fromX + (pulse.toX - pulse.fromX) * pulse.progress
+        const py = pulse.fromY + (pulse.toY - pulse.fromY) * pulse.progress
+        const glow = Math.sin(pulse.progress * Math.PI)
+
+        // Glow
+        const grad = ctx.createRadialGradient(px, py, 0, px, py, 12)
+        grad.addColorStop(0, `rgba(124, 154, 216, ${glow * 0.6})`)
+        grad.addColorStop(1, "rgba(124, 154, 216, 0)")
+        ctx.beginPath()
+        ctx.arc(px, py, 12, 0, Math.PI * 2)
+        ctx.fillStyle = grad
+        ctx.fill()
+
+        // Core
+        ctx.beginPath()
+        ctx.arc(px, py, 2.5, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(200, 220, 255, ${glow * 0.9})`
+        ctx.fill()
+      }
+
       // Draw nodes
       for (const n of nodes) {
+        const breathe = Math.sin(t * 1.5 + n.phase) * 0.3 + 0.7
+
+        if (n.hub) {
+          // Hub glow ring
+          const hubGlow = Math.sin(t * 2 + n.phase) * 0.15 + 0.2
+          const grad = ctx.createRadialGradient(n.x, n.y, n.r, n.x, n.y, n.r + 15)
+          grad.addColorStop(0, `rgba(124, 154, 216, ${hubGlow})`)
+          grad.addColorStop(1, "rgba(124, 154, 216, 0)")
+          ctx.beginPath()
+          ctx.arc(n.x, n.y, n.r + 15, 0, Math.PI * 2)
+          ctx.fillStyle = grad
+          ctx.fill()
+
+          // Hub core — brighter
+          ctx.beginPath()
+          ctx.arc(n.x, n.y, n.r + 1, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(160, 185, 230, ${0.5 * breathe})`
+          ctx.fill()
+        }
+
+        // Node dot
         ctx.beginPath()
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2)
-        ctx.fillStyle = "rgba(124, 154, 216, 0.2)"
+        ctx.arc(n.x, n.y, n.r * breathe, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(124, 154, 216, ${n.hub ? 0.6 : 0.35})`
         ctx.fill()
       }
 

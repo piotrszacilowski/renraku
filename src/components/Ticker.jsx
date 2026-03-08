@@ -1,14 +1,14 @@
 const items = [
   "402 PAYMENT REQUIRED",
   "USDC ON INK",
-  "AGENT-TO-AGENT",
+  "PAY-PER-CALL",
   "OPEN SOURCE",
   "SUB-CENT MICROPAYMENTS",
   "NO API KEYS",
   "INSTANT SETTLEMENT",
-  "SELF-HOSTABLE",
+  "NON-CUSTODIAL",
   "HTTP-NATIVE",
-  "MACHINE COMMERCE",
+  "MCP TOOLS",
 ]
 
 export default function Ticker() {

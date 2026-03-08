@@ -16,8 +16,8 @@ const steps = [
   {
     num: "3",
     title: "PAY",
-    description: "Renraku facilitator handles on-chain USDC payment and returns proof.",
-    code: "POST /facilitate\n→ txHash: 0xab3...f9",
+    description: "Renraku facilitator verifies the signed payment and settles it on-chain via transferWithAuthorization.",
+    code: "POST ink-facilitator-\n  production.up.railway.app\n→ txHash: 0xab3...f9",
   },
   {
     num: "4",

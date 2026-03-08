@@ -10,14 +10,14 @@ const features = [
   {
     num: "02",
     title: "AGENT-READY",
-    description: "Designed for AI agents to pay and get paid. No human in the loop. Pure machine commerce.",
+    description: "AI agents, MCP tool servers, and compute services pay and get paid autonomously. No human in the loop.",
     detail: "ZERO HUMAN INTERACTION",
   },
   {
     num: "03",
-    title: "STABLECOIN",
-    description: "Pay in USDC on Ink. Fast, cheap, predictable. No volatile tokens.",
-    detail: "USDC · INK · L2",
+    title: "NON-CUSTODIAL",
+    description: "USDC flows directly from buyer to seller on Ink. The facilitator never holds funds — it only pays gas.",
+    detail: "BUYER → SELLER · INK L2",
   },
   {
     num: "04",

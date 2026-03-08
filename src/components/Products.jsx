@@ -11,7 +11,7 @@ export default function Products() {
           PRODUCTS.
         </h2>
         <p className="text-center text-fg-muted font-medium text-lg mb-16">
-          Everything you need to build on the agentic economy.
+          Infrastructure for x402 payments on Ink.
         </p>
 
         <div className="flex flex-col md:flex-row gap-8 justify-center items-center">
@@ -31,21 +31,25 @@ export default function Products() {
               </div>
             </div>
             <div className="text-5xl md:text-6xl font-black tracking-tighter mb-4">x402</div>
-            <p className="text-lg font-medium text-fg mb-8">
-              Payment facilitator for the x402 protocol. Handles verification, settlement, and proof generation.
+            <p className="text-lg font-medium text-fg mb-4">
+              Payment settlement service for Ink. Verifies signed USDC payments and submits transactions on-chain — so you don't have to.
             </p>
+            <div className="bg-fg text-inverse/70 text-xs font-bold px-3 py-2 mb-8 overflow-x-auto">
+              <span className="text-accent-light">URL</span>{" "}
+              <span className="select-all">https://ink-facilitator-production.up.railway.app</span>
+            </div>
             <ul className="space-y-4 text-lg font-bold flex-grow mb-8">
               <li className="flex items-center gap-3">
-                <span className="text-accent text-2xl">✓</span> On-chain USDC settlement
+                <span className="text-accent text-2xl">✓</span> Non-custodial — funds go direct
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-accent text-2xl">✓</span> Sub-second verification
+                <span className="text-accent text-2xl">✓</span> Verify & settle on-chain USDC
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-accent text-2xl">✓</span> Self-hostable
+                <span className="text-accent text-2xl">✓</span> No blockchain knowledge needed
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-accent text-2xl">✓</span> REST API & SDK
+                <span className="text-accent text-2xl">✓</span> SDK & HTTP client
               </li>
             </ul>
             <a
@@ -72,25 +76,25 @@ export default function Products() {
                 </div>
               </div>
               <div className="bg-accent text-xs font-black px-2 py-1 uppercase tracking-wider -rotate-3 border border-accent-light/30">
-                Coming soon
+                Preview
               </div>
             </div>
-            <div className="text-5xl md:text-6xl font-black tracking-tighter mb-4 relative z-10">Agents</div>
+            <div className="text-5xl md:text-6xl font-black tracking-tighter mb-4 relative z-10">Services</div>
             <p className="text-lg font-medium mb-8 relative z-10">
-              A marketplace where AI agents discover, buy, and sell services autonomously via x402.
+              A directory of x402-enabled endpoints. Data APIs, AI inference, MCP tools, compute — all payable per call via USDC on Ink.
             </p>
             <ul className="space-y-4 text-lg font-bold flex-grow mb-8 relative z-10">
               <li className="flex items-center gap-3">
-                <span className="text-accent-light text-2xl">✓</span> Agent-to-agent discovery
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="text-accent-light text-2xl">✓</span> Reputation scoring
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="text-accent-light text-2xl">✓</span> Micropayment enabled
+                <span className="text-accent-light text-2xl">✓</span> Discover x402 endpoints
               </li>
               <li className="flex items-center gap-3">
                 <span className="text-accent-light text-2xl">✓</span> Pay-per-call pricing
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="text-accent-light text-2xl">✓</span> No accounts or API keys
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="text-accent-light text-2xl">✓</span> Agent & developer friendly
               </li>
             </ul>
             <Link
